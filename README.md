@@ -1,3 +1,3 @@
 # utils
 
-A description of this package.
+Swift utilities for Advent of code,
