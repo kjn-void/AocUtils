@@ -7,3 +7,9 @@ public func inputGet() -> [String] {
     let content = try! String(contentsOf: fileURL, encoding: String.Encoding.utf8)
     return content.components(separatedBy: "\n").filter { !$0.isEmpty }
 }
+
+extension String {
+    public func charAt(index: Int) -> Character {
+        return self[self.index(self.startIndex, offsetBy: index)]
+    }
+}
