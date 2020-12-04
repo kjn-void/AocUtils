@@ -9,11 +9,41 @@ public func inputGet(separatedBy: String = "\n") -> [String] {
 }
 
 public func recordsGet() -> [String] {
-    return inputGet(separatedBy: "\n\n").map{ $0.replacingOccurrences(of: "\n", with: " ") }
+    return inputGet(separatedBy: "\n\n")
+      .map{ $0
+              .replacingOccurrences(of: "\n", with: " ")
+              .trimmingCharacters(in: .whitespacesAndNewlines)
+      }
 }
 
 extension String {
     public func charAt(index: Int) -> Character {
         return self[self.index(self.startIndex, offsetBy: index)]
+    }
+
+    public func match(re: String) -> Bool {
+        guard let re = try? NSRegularExpression(pattern: re) else { return false }
+        let range = NSRange(location: 0, length: self.utf16.count)
+        return re.firstMatch(in: self, options: [], range: range) != nil
+    }
+
+    public func groups(re: String) -> [String] {
+        do {
+            let text = self
+            let regex = try NSRegularExpression(pattern: re)
+            let matches = regex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            return matches.map { match in
+                return (0..<match.numberOfRanges).map {
+                    let rangeBounds = match.range(at: $0)
+                    guard let range = Range(rangeBounds, in: text) else {
+                        return ""
+                    }
+                    return String(text[range])
+                }
+            }.first ?? []
+        } catch let error {
+            print("invalid regex: \(error.localizedDescription)")
+            return []
+        }
     }
 }
