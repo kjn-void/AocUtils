@@ -1,3 +1,4 @@
+import Dispatch
 import Foundation
 
 public func inputGet(separatedBy: String = "\n") -> [String] {
@@ -46,4 +47,26 @@ extension String {
             return []
         }
     }
+
+    public func allMatches(re: String) -> [[String]] {
+        var s = self
+        var m = Array<[String]>()
+        while true {
+            let groups = s.groups(re: re)
+            if groups.count == 0 {
+                break
+            }
+            m.append(groups)
+            s = String(s.dropFirst(groups[0].count))
+        }
+        return m
+    }
+}
+
+public func bench(_ fn:() -> Void) {
+    let start = DispatchTime.now()
+    fn()
+    let end = DispatchTime.now()
+    let elapsed = (end.uptimeNanoseconds - start.uptimeNanoseconds) / 1_000_000
+    print("⌚ Elapsed : \(elapsed) ms")
 }
